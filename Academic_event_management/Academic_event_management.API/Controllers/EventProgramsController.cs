@@ -7,74 +7,74 @@ namespace Academic_event_management.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AttendeesController : ControllerBase
+    public class EventProgramsController : ControllerBase
     {
         public DataContext _context;
 
-        public AttendeesController(DataContext context)
+        public EventProgramsController(DataContext context)
         {
             _context = context;
         }
 
-        //Get an attendee.
+        //Get an event program.
         [HttpGet("{Id}")]
         public async Task<ActionResult> Get(int Id)
         {
-            var Attendee = await _context.Attendees.FirstOrDefaultAsync(x => x.Id == Id);
+            var EventProgram = await _context.EventPrograms.FirstOrDefaultAsync(x => x.Id == Id);
 
-            if (Attendee == null)
+            if (EventProgram == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(Attendee);
+                return Ok(EventProgram);
             }
         }
 
-        //Get a list of attendees.
+        //Get a list of event programs.
         [HttpGet]
         public async Task<ActionResult> GetList()
         {
-            var AttendeesList = await _context.Attendees.ToListAsync();
+            var EventProgramsList = await _context.EventPrograms.ToListAsync();
 
-            if (AttendeesList.Count == 0)
+            if (EventProgramsList.Count == 0)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(AttendeesList);
+                return Ok(EventProgramsList);
             }
         }
 
-        //Insert an attendee.
+        //Insert an event program.
         [HttpPost]
-        public async Task<ActionResult> Post(Attendee attendee)
+        public async Task<ActionResult> Post(EventProgram eventProgram)
         {
 
-            _context.Add(attendee);
+            _context.Add(eventProgram);
             await _context.SaveChangesAsync();
-            return Ok(attendee);
+            return Ok(eventProgram);
         }
 
-        //Update an attendee.
+        //Update an event program.
         [HttpPut]
-        public async Task<ActionResult> Put(Attendee attendee)
+        public async Task<ActionResult> Put(EventProgram eventProgram)
         {
 
-            _context.Update(attendee);
+            _context.Update(eventProgram);
             await _context.SaveChangesAsync();
-            return Ok(attendee);
+            return Ok(eventProgram);
         }
 
-        //Delete an attendee.
+        //Delete an event program.
         [HttpDelete("{Id}")]
         public async Task<ActionResult> Delete(int Id)
         {
-            var Attendee = await _context.Attendees.Where(x => x.Id == Id).ExecuteDeleteAsync();
+            var AcademicEvent = await _context.EventPrograms.Where(x => x.Id == Id).ExecuteDeleteAsync();
 
-            if (Attendee == 0)
+            if (AcademicEvent == 0)
             {
 
                 return NotFound();

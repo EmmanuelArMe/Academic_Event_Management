@@ -9,7 +9,10 @@ namespace Academic_event_management.API.Data
         {
         }
         public DbSet<AcademicEvent> AcademicEvents { get; set; }
+        
         public DbSet<Attendee> Attendees { get; set; }
+
+        public DbSet<EventProgram> EventPrograms { get; set; }
 
 
 
