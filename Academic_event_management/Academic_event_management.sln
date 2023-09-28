@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Academic_event_management.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Academic_event_management.API", "Academic_event_management.API\Academic_event_management.API.csproj", "{22FDD537-702B-4701-9393-F595FE8D29AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Academic_event_management.WEB", "Academic_event_management.WEB\Academic_event_management.WEB.csproj", "{F50F9B2E-BF82-4A4E-A16B-B39C0E826CFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Academic_event_management.WEB", "Academic_event_management.WEB\Academic_event_management.WEB.csproj", "{F50F9B2E-BF82-4A4E-A16B-B39C0E826CFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
