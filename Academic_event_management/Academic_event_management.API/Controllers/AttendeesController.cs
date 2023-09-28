@@ -50,22 +50,32 @@ namespace Academic_event_management.API.Controllers
 
         //Insert an attendee.
         [HttpPost]
-        public async Task<ActionResult> Post(Attendee attendee)
+        public async Task<ActionResult> Post(Attendee Attendee)
         {
 
-            _context.Add(attendee);
+            _context.Add(Attendee);
             await _context.SaveChangesAsync();
-            return Ok(attendee);
+            return Ok(Attendee);
         }
 
         //Update an attendee.
         [HttpPut]
-        public async Task<ActionResult> Put(Attendee attendee)
+        public async Task<ActionResult> Put(Attendee Attendee)
         {
 
-            _context.Update(attendee);
+            var AttendeeExist = await _context.Attendees.FirstOrDefaultAsync(x => x.Id == Attendee.Id);
+
+            if (AttendeeExist == null)
+            {
+                return NotFound();
+            }
+
+            //We clean tracker for updating.
+            _context.ChangeTracker.Clear();
+
+            _context.Update(Attendee);
             await _context.SaveChangesAsync();
-            return Ok(attendee);
+            return Ok(Attendee);
         }
 
         //Delete an attendee.

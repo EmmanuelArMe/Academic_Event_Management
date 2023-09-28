@@ -50,22 +50,31 @@ namespace Academic_event_management.API.Controllers
 
         //Insert an academic event.
         [HttpPost]
-        public async Task<ActionResult> Post(AcademicEvent academicEvent)
+        public async Task<ActionResult> Post(AcademicEvent AcademicEvent)
         {
 
-            _context.Add(academicEvent);
+            _context.Add(AcademicEvent);
             await _context.SaveChangesAsync();
-            return Ok(academicEvent);
+            return Ok(AcademicEvent);
         }
 
         //Update an academic event.
         [HttpPut]
-        public async Task<ActionResult> Put(AcademicEvent academicEvent)
+        public async Task<ActionResult> Put(AcademicEvent AcademicEvent)
         {
+            var AcademicEventExist = await _context.AcademicEvents.FirstOrDefaultAsync(x => x.Id == AcademicEvent.Id);
 
-            _context.Update(academicEvent);
+            if (AcademicEventExist == null)
+            {
+                return NotFound();
+            }
+
+            //We clean tracker for updating.
+            _context.ChangeTracker.Clear();
+
+            _context.Update(AcademicEvent);
             await _context.SaveChangesAsync();
-            return Ok(academicEvent);
+            return Ok(AcademicEvent);
         }
 
         //Delete an academic event.
