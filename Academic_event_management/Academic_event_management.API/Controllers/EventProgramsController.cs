@@ -60,12 +60,22 @@ namespace Academic_event_management.API.Controllers
 
         //Update an event program.
         [HttpPut]
-        public async Task<ActionResult> Put(EventProgram eventProgram)
+        public async Task<ActionResult> Put(EventProgram EventProgram)
         {
 
-            _context.Update(eventProgram);
+            var EventProgramExist = await _context.EventPrograms.FirstOrDefaultAsync(x => x.Id == EventProgram.Id);
+
+            if (EventProgramExist == null)
+            {
+                return NotFound();
+            }
+
+            //We clean tracker for updating.
+            _context.ChangeTracker.Clear();
+
+            _context.Update(EventProgram);
             await _context.SaveChangesAsync();
-            return Ok(eventProgram);
+            return Ok(EventProgram);
         }
 
         //Delete an event program.
