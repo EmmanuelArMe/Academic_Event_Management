@@ -1,4 +1,5 @@
 using Academic_event_management.WEB;
+using Academic_event_management.WEB.Repositories;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -10,5 +11,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // HttpClient para consumir el API desde la Web.
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7000/") });
+
+//Repository injection
+builder.Services.AddScoped<IRepository, Repository>();
 
 await builder.Build().RunAsync();

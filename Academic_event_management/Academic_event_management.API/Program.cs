@@ -1,4 +1,5 @@
 using Academic_event_management.API.Data;
+using Academic_event_management.WEB.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
