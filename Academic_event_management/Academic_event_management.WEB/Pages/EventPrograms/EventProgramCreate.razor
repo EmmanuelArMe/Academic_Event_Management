@@ -1,0 +1,34 @@
+﻿@page "/eventprograms/create"
+@using Academic_event_management.Shared.Entities;
+@using Academic_event_management.WEB.Repositories;
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Create a event program</h3>
+
+<EventProgramForm @ref="eventProgramForm" eventProgram="eventProgram" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private EventProgram eventProgram = new();
+
+    private EventProgramForm? eventProgramForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.Post("/api/eventprograms", eventProgram);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+        eventProgramForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/eventprograms");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/eventprograms");
+    }
+}

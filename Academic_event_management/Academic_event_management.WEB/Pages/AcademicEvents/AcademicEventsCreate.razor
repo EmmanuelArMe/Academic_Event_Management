@@ -1,0 +1,34 @@
+﻿@page "/academicevents/create"
+@using Academic_event_management.Shared.Entities;
+@using Academic_event_management.WEB.Repositories;
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Create academic event</h3>
+
+<AcademicEventForm @ref="academicForm" academicEvent="academicEvent" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private AcademicEvent academicEvent = new();
+
+    private AcademicEventForm? academicForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.Post("/api/academicevents", academicEvent);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+        academicForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/academicevents");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/academicevents");
+    }
+}
