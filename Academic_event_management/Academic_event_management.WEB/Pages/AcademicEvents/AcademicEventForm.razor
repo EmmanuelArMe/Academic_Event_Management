@@ -1,0 +1,101 @@
+﻿﻿@using Academic_event_management.Shared.Entities;
+@inject SweetAlertService swal
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+<EditForm EditContext="editContext" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Name:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.AcademicEventName" />
+            <ValidationMessage For="@(() => academicEvent.AcademicEventName)" />
+        </div>
+        <label>Start Date:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.StartDate" />
+            <ValidationMessage For="@(() => academicEvent.StartDate)" />
+        </div>
+        <label>Finish Date:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.FinishDate" />
+            <ValidationMessage For="@(() => academicEvent.FinishDate)" />
+        </div>
+        <label>Location:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.Location" />
+            <ValidationMessage For="@(() => academicEvent.Location)" />
+        </div>
+        <label>Description:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.Description" />
+            <ValidationMessage For="@(() => academicEvent.Description)" />
+        </div>
+        <label>Topic:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@academicEvent.Topic" />
+            <ValidationMessage For="@(() => academicEvent.Topic)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save Changes</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Return</button>
+</EditForm>
+
+@code {
+
+
+    private EditContext editContext = null!;
+
+    protected override void OnInitialized()
+    {
+        editContext = new(academicEvent);
+
+    }
+
+
+    [EditorRequired]
+    [Parameter]
+    public AcademicEvent academicEvent { get; set; } = null!;
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; } = false;
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasEdited = editContext.IsModified();
+
+        if (!formWasEdited)
+        {
+            return;
+        }
+
+        if (FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmation",
+                Text = "¿You wish to leave the page and lose the changes?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true
+            });
+
+        var confirm = !string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        context.PreventNavigation();
+    }
+}
