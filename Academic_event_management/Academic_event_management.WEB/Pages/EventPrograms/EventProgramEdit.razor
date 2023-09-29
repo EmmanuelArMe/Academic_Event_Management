@@ -1,0 +1,70 @@
+﻿@page "/eventprograms/edit/{Id:int}"
+@using Academic_event_management.Shared.Entities;
+@using Academic_event_management.WEB.Repositories
+@inject NavigationManager navigationManager
+@inject IRepository repository
+@inject SweetAlertService swal
+
+<h3>Edit event program</h3>
+
+@if (eventProgram is null)
+{
+    <div class="align-items-center">
+        <img src=" https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!bw700 " />
+    </div>
+}
+else
+{
+    <EventProgramForm @ref="eventProgramForm" eventProgram="eventProgram" OnSubmit="Edit" ReturnAction="Return" />
+}
+
+@code {
+    private EventProgram? eventProgram;
+    private EventProgramForm? eventProgramForm;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHTTP = await repository.Get<EventProgram>($"api/eventprograms/{Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("eventprograms");
+            }
+            else
+            {
+                var messageError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", messageError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            eventProgram = responseHTTP.Response;
+        }
+    }
+
+    private async Task Edit()
+    {
+        var responseHTTP = await repository.Put("api/eventprograms", eventProgram);
+
+        if (responseHTTP.Error)
+        {
+            var mensajeError = await responseHTTP.GetErrorMessageAsync();
+            await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            eventProgramForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("eventprograms");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("eventprograms");
+    }
+}

@@ -50,12 +50,12 @@ namespace Academic_event_management.API.Controllers
 
         //Insert an event program.
         [HttpPost]
-        public async Task<ActionResult> Post(EventProgram eventProgram)
+        public async Task<ActionResult> Post(EventProgram EventProgram)
         {
 
-            _context.Add(eventProgram);
+            _context.Add(EventProgram);
             await _context.SaveChangesAsync();
-            return Ok(eventProgram);
+            return Ok(EventProgram);
         }
 
         //Update an event program.

@@ -1,5 +1,109 @@
-﻿<h3>Atendees</h3>
+﻿@page "/attendees"
+@using Academic_event_management.Shared.Entities;
+@using Academic_event_management.WEB.Repositories;
+
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
+
+
+<h3>Attendees</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/attendees/create">New attendee</a>
+</div>
+
+<GenericList MyList="Attendees">
+
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Attendee</th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var attendee in Attendees!)
+                {
+                    <tr>
+                        <td>
+                            @attendee.Name
+                        </td>
+                        <td>
+                            @attendee.InstitutionalAffilitation
+                        </td>
+                        <td>
+                            @attendee.InterestArea
+                        </td>
+                        <td>
+                            @attendee.ParticipantType
+                        </td>
+                        <td>
+                            <a href="/attendees/edit/@attendee.Id" class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => Delete(attendee))>Borrar</button>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
 
 @code {
+    public List<Attendee>? Attendees { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var responseHppt = await repository.Get<List<Attendee>>("/api/attendees");
+        Attendees = responseHppt.Response!;
+    }
+
+    private async Task Delete(Attendee attendee)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmation",
+                Text = "¿Are you sure you want to delete the record?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.Delete($"api/attendees/{attendee.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var errorMessage = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", errorMessage, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
+    }
 
 }

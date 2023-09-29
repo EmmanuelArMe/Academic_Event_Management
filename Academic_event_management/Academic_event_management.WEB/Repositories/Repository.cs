@@ -86,8 +86,6 @@ namespace Academic_event_management.WEB.Repositories
             var responseHTTP = await _httpClient.DeleteAsync(url);
             return new HttpResponseWrapper<object>(null, !responseHTTP.IsSuccessStatusCode, responseHTTP);
 
-
-
         }
     }
 }

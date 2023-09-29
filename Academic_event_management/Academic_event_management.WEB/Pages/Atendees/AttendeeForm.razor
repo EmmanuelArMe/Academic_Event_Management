@@ -1,0 +1,91 @@
+﻿﻿@using Academic_event_management.Shared.Entities;
+@inject SweetAlertService swal
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+<EditForm EditContext="editContext" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Name:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@attendee.Name" />
+            <ValidationMessage For="@(() => attendee.Name)" />
+        </div>
+        <label>Institutional Affilitation:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@attendee.InstitutionalAffilitation" />
+            <ValidationMessage For="@(() => attendee.InstitutionalAffilitation)" />
+        </div>
+        <label>Interest Area:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@attendee.InterestArea" />
+            <ValidationMessage For="@(() => attendee.InterestArea)" />
+        </div>
+        <label>Participant Type :</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@attendee.ParticipantType" />
+            <ValidationMessage For="@(() => attendee.ParticipantType)" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save Changes</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Return</button>
+</EditForm>
+
+@code {
+
+
+    private EditContext editContext = null!;
+
+    protected override void OnInitialized()
+    {
+        editContext = new(attendee);
+
+    }
+
+
+    [EditorRequired]
+    [Parameter]
+    public Attendee attendee { get; set; } = null!;
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; } = false;
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasEdited = editContext.IsModified();
+
+        if (!formWasEdited)
+        {
+            return;
+        }
+
+        if (FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmation",
+                Text = "¿You wish to leave the page and lose the changes?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true
+            });
+
+        var confirm = !string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        context.PreventNavigation();
+    }
+}

@@ -1,5 +1,6 @@
 using Academic_event_management.WEB;
 using Academic_event_management.WEB.Repositories;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -9,10 +10,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-// HttpClient para consumir el API desde la Web.
+// HttpClient to consume the API from the Web.
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7000/") });
 
 //Repository injection
 builder.Services.AddScoped<IRepository, Repository>();
+
+//Injectition of SweetAlert2
+builder.Services.AddSweetAlert2();
 
 await builder.Build().RunAsync();
